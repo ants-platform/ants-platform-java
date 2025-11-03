@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.langfuse</groupId>
-    <artifactId>langfuse-java</artifactId>
+    <groupId>ai.agenticants</groupId>
+    <artifactId>ants-platform-java</artifactId>
     <version>0.1.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>langfuse-java</name>
-    <description>Java client for the Langfuse API</description>
-    <url>https://langfuse.com</url>
+    <name>ants-platform-java</name>
+    <description>Java client for the ANTS Platform API</description>
+    <url>https://agenticants.ai</url>
 
     <licenses>
         <license>
@@ -20,17 +20,17 @@
 
     <developers>
         <developer>
-            <name>Langfuse Team</name>
-            <email>support@langfuse.com</email>
-            <organization>Langfuse</organization>
-            <organizationUrl>https://langfuse.com</organizationUrl>
+            <name>ANTS Platform Team</name>
+            <email>support@ants-platform.com</email>
+            <organization>ANTS Platform</organization>
+            <organizationUrl>https://ants-platform.com</organizationUrl>
         </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/langfuse/langfuse-java.git</connection>
-        <developerConnection>scm:git:https://github.com/langfuse/langfuse-java.git</developerConnection>
-        <url>https://github.com/langfuse/langfuse-java</url>
+        <connection>scm:git:https://github.com/ants-platform/ants-platform-java.git</connection>
+        <developerConnection>scm:git:https://github.com/ants-platform/ants-platform-java.git</developerConnection>
+        <url>https://github.com/ants-platform/ants-platform-java</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -87,6 +87,17 @@
 
     <build>
         <plugins>
+            <!-- Compiler Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
             <!-- Source JAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
