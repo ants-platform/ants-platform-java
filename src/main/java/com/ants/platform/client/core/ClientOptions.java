@@ -75,6 +75,9 @@ public final class ClientOptions {
     private OkHttpClient httpClient = new OkHttpClient.Builder()
         .addInterceptor(new RetryInterceptor(3))
         .callTimeout(this.timeout, TimeUnit.SECONDS)
+        .connectTimeout(this.timeout, TimeUnit.SECONDS)
+        .readTimeout(this.timeout, TimeUnit.SECONDS)
+        .writeTimeout(this.timeout, TimeUnit.SECONDS)
         .build();
 
     public Builder environment(Environment environment) {

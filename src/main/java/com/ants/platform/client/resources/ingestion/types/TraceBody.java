@@ -54,13 +54,20 @@ public final class TraceBody {
 
   private final Optional<Boolean> public_;
 
+  private final Optional<String> agentId;
+
+  private final Optional<String> agentName;
+
+  private final Optional<String> agentDisplayName;
+
   private final Map<String, Object> additionalProperties;
 
   private TraceBody(Optional<String> id, Optional<OffsetDateTime> timestamp, Optional<String> name,
       Optional<String> userId, Optional<Object> input, Optional<Object> output,
       Optional<String> sessionId, Optional<String> release, Optional<String> version,
       Optional<Object> metadata, Optional<List<String>> tags, Optional<String> environment,
-      Optional<Boolean> public_, Map<String, Object> additionalProperties) {
+      Optional<Boolean> public_, Optional<String> agentId, Optional<String> agentName,
+      Optional<String> agentDisplayName, Map<String, Object> additionalProperties) {
     this.id = id;
     this.timestamp = timestamp;
     this.name = name;
@@ -74,6 +81,9 @@ public final class TraceBody {
     this.tags = tags;
     this.environment = environment;
     this.public_ = public_;
+    this.agentId = agentId;
+    this.agentName = agentName;
+    this.agentDisplayName = agentDisplayName;
     this.additionalProperties = additionalProperties;
   }
 
@@ -145,6 +155,30 @@ public final class TraceBody {
     return public_;
   }
 
+  /**
+   * @return Deterministic agent identifier (BLAKE2b-64 hash)
+   */
+  @JsonProperty("agentId")
+  public Optional<String> getAgentId() {
+    return agentId;
+  }
+
+  /**
+   * @return Agent name (immutable identifier)
+   */
+  @JsonProperty("agentName")
+  public Optional<String> getAgentName() {
+    return agentName;
+  }
+
+  /**
+   * @return Human-readable agent display name
+   */
+  @JsonProperty("agentDisplayName")
+  public Optional<String> getAgentDisplayName() {
+    return agentDisplayName;
+  }
+
   @java.lang.Override
   public boolean equals(Object other) {
     if (this == other) return true;
@@ -157,12 +191,12 @@ public final class TraceBody {
   }
 
   private boolean equalTo(TraceBody other) {
-    return id.equals(other.id) && timestamp.equals(other.timestamp) && name.equals(other.name) && userId.equals(other.userId) && input.equals(other.input) && output.equals(other.output) && sessionId.equals(other.sessionId) && release.equals(other.release) && version.equals(other.version) && metadata.equals(other.metadata) && tags.equals(other.tags) && environment.equals(other.environment) && public_.equals(other.public_);
+    return id.equals(other.id) && timestamp.equals(other.timestamp) && name.equals(other.name) && userId.equals(other.userId) && input.equals(other.input) && output.equals(other.output) && sessionId.equals(other.sessionId) && release.equals(other.release) && version.equals(other.version) && metadata.equals(other.metadata) && tags.equals(other.tags) && environment.equals(other.environment) && public_.equals(other.public_) && agentId.equals(other.agentId) && agentName.equals(other.agentName) && agentDisplayName.equals(other.agentDisplayName);
   }
 
   @java.lang.Override
   public int hashCode() {
-    return Objects.hash(this.id, this.timestamp, this.name, this.userId, this.input, this.output, this.sessionId, this.release, this.version, this.metadata, this.tags, this.environment, this.public_);
+    return Objects.hash(this.id, this.timestamp, this.name, this.userId, this.input, this.output, this.sessionId, this.release, this.version, this.metadata, this.tags, this.environment, this.public_, this.agentId, this.agentName, this.agentDisplayName);
   }
 
   @java.lang.Override
@@ -204,6 +238,12 @@ public final class TraceBody {
 
     private Optional<Boolean> public_ = Optional.empty();
 
+    private Optional<String> agentId = Optional.empty();
+
+    private Optional<String> agentName = Optional.empty();
+
+    private Optional<String> agentDisplayName = Optional.empty();
+
     @JsonAnySetter
     private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -224,6 +264,9 @@ public final class TraceBody {
       tags(other.getTags());
       environment(other.getEnvironment());
       public_(other.getPublic());
+      agentId(other.getAgentId());
+      agentName(other.getAgentName());
+      agentDisplayName(other.getAgentDisplayName());
       return this;
     }
 
@@ -409,8 +452,50 @@ public final class TraceBody {
       return this;
     }
 
+    @JsonSetter(
+        value = "agentId",
+        nulls = Nulls.SKIP
+    )
+    public Builder agentId(Optional<String> agentId) {
+      this.agentId = agentId;
+      return this;
+    }
+
+    public Builder agentId(String agentId) {
+      this.agentId = Optional.ofNullable(agentId);
+      return this;
+    }
+
+    @JsonSetter(
+        value = "agentName",
+        nulls = Nulls.SKIP
+    )
+    public Builder agentName(Optional<String> agentName) {
+      this.agentName = agentName;
+      return this;
+    }
+
+    public Builder agentName(String agentName) {
+      this.agentName = Optional.ofNullable(agentName);
+      return this;
+    }
+
+    @JsonSetter(
+        value = "agentDisplayName",
+        nulls = Nulls.SKIP
+    )
+    public Builder agentDisplayName(Optional<String> agentDisplayName) {
+      this.agentDisplayName = agentDisplayName;
+      return this;
+    }
+
+    public Builder agentDisplayName(String agentDisplayName) {
+      this.agentDisplayName = Optional.ofNullable(agentDisplayName);
+      return this;
+    }
+
     public TraceBody build() {
-      return new TraceBody(id, timestamp, name, userId, input, output, sessionId, release, version, metadata, tags, environment, public_, additionalProperties);
+      return new TraceBody(id, timestamp, name, userId, input, output, sessionId, release, version, metadata, tags, environment, public_, agentId, agentName, agentDisplayName, additionalProperties);
     }
   }
 }

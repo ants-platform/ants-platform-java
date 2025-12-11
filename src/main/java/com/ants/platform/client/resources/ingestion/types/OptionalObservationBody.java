@@ -49,12 +49,19 @@ public final class OptionalObservationBody implements IOptionalObservationBody {
 
   private final Optional<String> environment;
 
+  private final Optional<String> agentId;
+
+  private final Optional<String> agentName;
+
+  private final Optional<String> agentDisplayName;
+
   private final Map<String, Object> additionalProperties;
 
   private OptionalObservationBody(Optional<String> traceId, Optional<String> name,
       Optional<OffsetDateTime> startTime, Optional<Object> metadata, Optional<Object> input,
       Optional<Object> output, Optional<ObservationLevel> level, Optional<String> statusMessage,
       Optional<String> parentObservationId, Optional<String> version, Optional<String> environment,
+      Optional<String> agentId, Optional<String> agentName, Optional<String> agentDisplayName,
       Map<String, Object> additionalProperties) {
     this.traceId = traceId;
     this.name = name;
@@ -67,6 +74,9 @@ public final class OptionalObservationBody implements IOptionalObservationBody {
     this.parentObservationId = parentObservationId;
     this.version = version;
     this.environment = environment;
+    this.agentId = agentId;
+    this.agentName = agentName;
+    this.agentDisplayName = agentDisplayName;
     this.additionalProperties = additionalProperties;
   }
 
@@ -136,6 +146,24 @@ public final class OptionalObservationBody implements IOptionalObservationBody {
     return environment;
   }
 
+  @JsonProperty("agentId")
+  @java.lang.Override
+  public Optional<String> getAgentId() {
+    return agentId;
+  }
+
+  @JsonProperty("agentName")
+  @java.lang.Override
+  public Optional<String> getAgentName() {
+    return agentName;
+  }
+
+  @JsonProperty("agentDisplayName")
+  @java.lang.Override
+  public Optional<String> getAgentDisplayName() {
+    return agentDisplayName;
+  }
+
   @java.lang.Override
   public boolean equals(Object other) {
     if (this == other) return true;
@@ -148,12 +176,12 @@ public final class OptionalObservationBody implements IOptionalObservationBody {
   }
 
   private boolean equalTo(OptionalObservationBody other) {
-    return traceId.equals(other.traceId) && name.equals(other.name) && startTime.equals(other.startTime) && metadata.equals(other.metadata) && input.equals(other.input) && output.equals(other.output) && level.equals(other.level) && statusMessage.equals(other.statusMessage) && parentObservationId.equals(other.parentObservationId) && version.equals(other.version) && environment.equals(other.environment);
+    return traceId.equals(other.traceId) && name.equals(other.name) && startTime.equals(other.startTime) && metadata.equals(other.metadata) && input.equals(other.input) && output.equals(other.output) && level.equals(other.level) && statusMessage.equals(other.statusMessage) && parentObservationId.equals(other.parentObservationId) && version.equals(other.version) && environment.equals(other.environment) && agentId.equals(other.agentId) && agentName.equals(other.agentName) && agentDisplayName.equals(other.agentDisplayName);
   }
 
   @java.lang.Override
   public int hashCode() {
-    return Objects.hash(this.traceId, this.name, this.startTime, this.metadata, this.input, this.output, this.level, this.statusMessage, this.parentObservationId, this.version, this.environment);
+    return Objects.hash(this.traceId, this.name, this.startTime, this.metadata, this.input, this.output, this.level, this.statusMessage, this.parentObservationId, this.version, this.environment, this.agentId, this.agentName, this.agentDisplayName);
   }
 
   @java.lang.Override
@@ -191,6 +219,12 @@ public final class OptionalObservationBody implements IOptionalObservationBody {
 
     private Optional<String> environment = Optional.empty();
 
+    private Optional<String> agentId = Optional.empty();
+
+    private Optional<String> agentName = Optional.empty();
+
+    private Optional<String> agentDisplayName = Optional.empty();
+
     @JsonAnySetter
     private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -209,6 +243,9 @@ public final class OptionalObservationBody implements IOptionalObservationBody {
       parentObservationId(other.getParentObservationId());
       version(other.getVersion());
       environment(other.getEnvironment());
+      agentId(other.getAgentId());
+      agentName(other.getAgentName());
+      agentDisplayName(other.getAgentDisplayName());
       return this;
     }
 
@@ -366,8 +403,50 @@ public final class OptionalObservationBody implements IOptionalObservationBody {
       return this;
     }
 
+    @JsonSetter(
+        value = "agentId",
+        nulls = Nulls.SKIP
+    )
+    public Builder agentId(Optional<String> agentId) {
+      this.agentId = agentId;
+      return this;
+    }
+
+    public Builder agentId(String agentId) {
+      this.agentId = Optional.ofNullable(agentId);
+      return this;
+    }
+
+    @JsonSetter(
+        value = "agentName",
+        nulls = Nulls.SKIP
+    )
+    public Builder agentName(Optional<String> agentName) {
+      this.agentName = agentName;
+      return this;
+    }
+
+    public Builder agentName(String agentName) {
+      this.agentName = Optional.ofNullable(agentName);
+      return this;
+    }
+
+    @JsonSetter(
+        value = "agentDisplayName",
+        nulls = Nulls.SKIP
+    )
+    public Builder agentDisplayName(Optional<String> agentDisplayName) {
+      this.agentDisplayName = agentDisplayName;
+      return this;
+    }
+
+    public Builder agentDisplayName(String agentDisplayName) {
+      this.agentDisplayName = Optional.ofNullable(agentDisplayName);
+      return this;
+    }
+
     public OptionalObservationBody build() {
-      return new OptionalObservationBody(traceId, name, startTime, metadata, input, output, level, statusMessage, parentObservationId, version, environment, additionalProperties);
+      return new OptionalObservationBody(traceId, name, startTime, metadata, input, output, level, statusMessage, parentObservationId, version, environment, agentId, agentName, agentDisplayName, additionalProperties);
     }
   }
 }

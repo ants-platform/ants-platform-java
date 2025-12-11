@@ -57,6 +57,12 @@ public final class UpdateGenerationBody implements IUpdateSpanBody, IUpdateEvent
 
   private final Optional<String> environment;
 
+  private final Optional<String> agentId;
+
+  private final Optional<String> agentName;
+
+  private final Optional<String> agentDisplayName;
+
   private final Optional<OffsetDateTime> completionStartTime;
 
   private final Optional<String> model;
@@ -80,6 +86,7 @@ public final class UpdateGenerationBody implements IUpdateSpanBody, IUpdateEvent
       Optional<Object> metadata, Optional<Object> input, Optional<Object> output,
       Optional<ObservationLevel> level, Optional<String> statusMessage,
       Optional<String> parentObservationId, Optional<String> version, Optional<String> environment,
+      Optional<String> agentId, Optional<String> agentName, Optional<String> agentDisplayName,
       Optional<OffsetDateTime> completionStartTime, Optional<String> model,
       Optional<Map<String, MapValue>> modelParameters, Optional<IngestionUsage> usage,
       Optional<String> promptName, Optional<UsageDetails> usageDetails,
@@ -98,6 +105,9 @@ public final class UpdateGenerationBody implements IUpdateSpanBody, IUpdateEvent
     this.parentObservationId = parentObservationId;
     this.version = version;
     this.environment = environment;
+    this.agentId = agentId;
+    this.agentName = agentName;
+    this.agentDisplayName = agentDisplayName;
     this.completionStartTime = completionStartTime;
     this.model = model;
     this.modelParameters = modelParameters;
@@ -187,6 +197,24 @@ public final class UpdateGenerationBody implements IUpdateSpanBody, IUpdateEvent
     return environment;
   }
 
+  @JsonProperty("agentId")
+  @java.lang.Override
+  public Optional<String> getAgentId() {
+    return agentId;
+  }
+
+  @JsonProperty("agentName")
+  @java.lang.Override
+  public Optional<String> getAgentName() {
+    return agentName;
+  }
+
+  @JsonProperty("agentDisplayName")
+  @java.lang.Override
+  public Optional<String> getAgentDisplayName() {
+    return agentDisplayName;
+  }
+
   @JsonProperty("completionStartTime")
   public Optional<OffsetDateTime> getCompletionStartTime() {
     return completionStartTime;
@@ -239,12 +267,12 @@ public final class UpdateGenerationBody implements IUpdateSpanBody, IUpdateEvent
   }
 
   private boolean equalTo(UpdateGenerationBody other) {
-    return endTime.equals(other.endTime) && id.equals(other.id) && traceId.equals(other.traceId) && name.equals(other.name) && startTime.equals(other.startTime) && metadata.equals(other.metadata) && input.equals(other.input) && output.equals(other.output) && level.equals(other.level) && statusMessage.equals(other.statusMessage) && parentObservationId.equals(other.parentObservationId) && version.equals(other.version) && environment.equals(other.environment) && completionStartTime.equals(other.completionStartTime) && model.equals(other.model) && modelParameters.equals(other.modelParameters) && usage.equals(other.usage) && promptName.equals(other.promptName) && usageDetails.equals(other.usageDetails) && costDetails.equals(other.costDetails) && promptVersion.equals(other.promptVersion);
+    return endTime.equals(other.endTime) && id.equals(other.id) && traceId.equals(other.traceId) && name.equals(other.name) && startTime.equals(other.startTime) && metadata.equals(other.metadata) && input.equals(other.input) && output.equals(other.output) && level.equals(other.level) && statusMessage.equals(other.statusMessage) && parentObservationId.equals(other.parentObservationId) && version.equals(other.version) && environment.equals(other.environment) && agentId.equals(other.agentId) && agentName.equals(other.agentName) && agentDisplayName.equals(other.agentDisplayName) && completionStartTime.equals(other.completionStartTime) && model.equals(other.model) && modelParameters.equals(other.modelParameters) && usage.equals(other.usage) && promptName.equals(other.promptName) && usageDetails.equals(other.usageDetails) && costDetails.equals(other.costDetails) && promptVersion.equals(other.promptVersion);
   }
 
   @java.lang.Override
   public int hashCode() {
-    return Objects.hash(this.endTime, this.id, this.traceId, this.name, this.startTime, this.metadata, this.input, this.output, this.level, this.statusMessage, this.parentObservationId, this.version, this.environment, this.completionStartTime, this.model, this.modelParameters, this.usage, this.promptName, this.usageDetails, this.costDetails, this.promptVersion);
+    return Objects.hash(this.endTime, this.id, this.traceId, this.name, this.startTime, this.metadata, this.input, this.output, this.level, this.statusMessage, this.parentObservationId, this.version, this.environment, this.agentId, this.agentName, this.agentDisplayName, this.completionStartTime, this.model, this.modelParameters, this.usage, this.promptName, this.usageDetails, this.costDetails, this.promptVersion);
   }
 
   @java.lang.Override
@@ -313,6 +341,18 @@ public final class UpdateGenerationBody implements IUpdateSpanBody, IUpdateEvent
 
     _FinalStage environment(String environment);
 
+    _FinalStage agentId(Optional<String> agentId);
+
+    _FinalStage agentId(String agentId);
+
+    _FinalStage agentName(Optional<String> agentName);
+
+    _FinalStage agentName(String agentName);
+
+    _FinalStage agentDisplayName(Optional<String> agentDisplayName);
+
+    _FinalStage agentDisplayName(String agentDisplayName);
+
     _FinalStage completionStartTime(Optional<OffsetDateTime> completionStartTime);
 
     _FinalStage completionStartTime(OffsetDateTime completionStartTime);
@@ -370,6 +410,12 @@ public final class UpdateGenerationBody implements IUpdateSpanBody, IUpdateEvent
 
     private Optional<String> environment = Optional.empty();
 
+    private Optional<String> agentId = Optional.empty();
+
+    private Optional<String> agentName = Optional.empty();
+
+    private Optional<String> agentDisplayName = Optional.empty();
+
     private Optional<String> version = Optional.empty();
 
     private Optional<String> parentObservationId = Optional.empty();
@@ -413,6 +459,9 @@ public final class UpdateGenerationBody implements IUpdateSpanBody, IUpdateEvent
       parentObservationId(other.getParentObservationId());
       version(other.getVersion());
       environment(other.getEnvironment());
+      agentId(other.getAgentId());
+      agentName(other.getAgentName());
+      agentDisplayName(other.getAgentDisplayName());
       completionStartTime(other.getCompletionStartTime());
       model(other.getModel());
       modelParameters(other.getModelParameters());
@@ -572,6 +621,54 @@ public final class UpdateGenerationBody implements IUpdateSpanBody, IUpdateEvent
     )
     public _FinalStage environment(Optional<String> environment) {
       this.environment = environment;
+      return this;
+    }
+
+    @java.lang.Override
+    public _FinalStage agentId(String agentId) {
+      this.agentId = Optional.ofNullable(agentId);
+      return this;
+    }
+
+    @java.lang.Override
+    @JsonSetter(
+        value = "agentId",
+        nulls = Nulls.SKIP
+    )
+    public _FinalStage agentId(Optional<String> agentId) {
+      this.agentId = agentId;
+      return this;
+    }
+
+    @java.lang.Override
+    public _FinalStage agentName(String agentName) {
+      this.agentName = Optional.ofNullable(agentName);
+      return this;
+    }
+
+    @java.lang.Override
+    @JsonSetter(
+        value = "agentName",
+        nulls = Nulls.SKIP
+    )
+    public _FinalStage agentName(Optional<String> agentName) {
+      this.agentName = agentName;
+      return this;
+    }
+
+    @java.lang.Override
+    public _FinalStage agentDisplayName(String agentDisplayName) {
+      this.agentDisplayName = Optional.ofNullable(agentDisplayName);
+      return this;
+    }
+
+    @java.lang.Override
+    @JsonSetter(
+        value = "agentDisplayName",
+        nulls = Nulls.SKIP
+    )
+    public _FinalStage agentDisplayName(Optional<String> agentDisplayName) {
+      this.agentDisplayName = agentDisplayName;
       return this;
     }
 
@@ -753,7 +850,7 @@ public final class UpdateGenerationBody implements IUpdateSpanBody, IUpdateEvent
 
     @java.lang.Override
     public UpdateGenerationBody build() {
-      return new UpdateGenerationBody(endTime, id, traceId, name, startTime, metadata, input, output, level, statusMessage, parentObservationId, version, environment, completionStartTime, model, modelParameters, usage, promptName, usageDetails, costDetails, promptVersion, additionalProperties);
+      return new UpdateGenerationBody(endTime, id, traceId, name, startTime, metadata, input, output, level, statusMessage, parentObservationId, version, environment, agentId, agentName, agentDisplayName, completionStartTime, model, modelParameters, usage, promptName, usageDetails, costDetails, promptVersion, additionalProperties);
     }
   }
 }

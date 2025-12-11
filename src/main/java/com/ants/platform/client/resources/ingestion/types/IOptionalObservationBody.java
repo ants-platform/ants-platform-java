@@ -32,4 +32,10 @@ public interface IOptionalObservationBody {
   Optional<String> getVersion();
 
   Optional<String> getEnvironment();
+
+  Optional<String> getAgentId();
+
+  Optional<String> getAgentName();
+
+  Optional<String> getAgentDisplayName();
 }

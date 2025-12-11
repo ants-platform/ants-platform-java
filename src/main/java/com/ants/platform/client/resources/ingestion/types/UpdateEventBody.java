@@ -52,12 +52,19 @@ public final class UpdateEventBody implements IUpdateEventBody, IOptionalObserva
 
   private final Optional<String> environment;
 
+  private final Optional<String> agentId;
+
+  private final Optional<String> agentName;
+
+  private final Optional<String> agentDisplayName;
+
   private final Map<String, Object> additionalProperties;
 
   private UpdateEventBody(String id, Optional<String> traceId, Optional<String> name,
       Optional<OffsetDateTime> startTime, Optional<Object> metadata, Optional<Object> input,
       Optional<Object> output, Optional<ObservationLevel> level, Optional<String> statusMessage,
       Optional<String> parentObservationId, Optional<String> version, Optional<String> environment,
+      Optional<String> agentId, Optional<String> agentName, Optional<String> agentDisplayName,
       Map<String, Object> additionalProperties) {
     this.id = id;
     this.traceId = traceId;
@@ -71,6 +78,9 @@ public final class UpdateEventBody implements IUpdateEventBody, IOptionalObserva
     this.parentObservationId = parentObservationId;
     this.version = version;
     this.environment = environment;
+    this.agentId = agentId;
+    this.agentName = agentName;
+    this.agentDisplayName = agentDisplayName;
     this.additionalProperties = additionalProperties;
   }
 
@@ -146,6 +156,24 @@ public final class UpdateEventBody implements IUpdateEventBody, IOptionalObserva
     return environment;
   }
 
+  @JsonProperty("agentId")
+  @java.lang.Override
+  public Optional<String> getAgentId() {
+    return agentId;
+  }
+
+  @JsonProperty("agentName")
+  @java.lang.Override
+  public Optional<String> getAgentName() {
+    return agentName;
+  }
+
+  @JsonProperty("agentDisplayName")
+  @java.lang.Override
+  public Optional<String> getAgentDisplayName() {
+    return agentDisplayName;
+  }
+
   @java.lang.Override
   public boolean equals(Object other) {
     if (this == other) return true;
@@ -158,12 +186,12 @@ public final class UpdateEventBody implements IUpdateEventBody, IOptionalObserva
   }
 
   private boolean equalTo(UpdateEventBody other) {
-    return id.equals(other.id) && traceId.equals(other.traceId) && name.equals(other.name) && startTime.equals(other.startTime) && metadata.equals(other.metadata) && input.equals(other.input) && output.equals(other.output) && level.equals(other.level) && statusMessage.equals(other.statusMessage) && parentObservationId.equals(other.parentObservationId) && version.equals(other.version) && environment.equals(other.environment);
+    return id.equals(other.id) && traceId.equals(other.traceId) && name.equals(other.name) && startTime.equals(other.startTime) && metadata.equals(other.metadata) && input.equals(other.input) && output.equals(other.output) && level.equals(other.level) && statusMessage.equals(other.statusMessage) && parentObservationId.equals(other.parentObservationId) && version.equals(other.version) && environment.equals(other.environment) && agentId.equals(other.agentId) && agentName.equals(other.agentName) && agentDisplayName.equals(other.agentDisplayName);
   }
 
   @java.lang.Override
   public int hashCode() {
-    return Objects.hash(this.id, this.traceId, this.name, this.startTime, this.metadata, this.input, this.output, this.level, this.statusMessage, this.parentObservationId, this.version, this.environment);
+    return Objects.hash(this.id, this.traceId, this.name, this.startTime, this.metadata, this.input, this.output, this.level, this.statusMessage, this.parentObservationId, this.version, this.environment, this.agentId, this.agentName, this.agentDisplayName);
   }
 
   @java.lang.Override
@@ -227,6 +255,18 @@ public final class UpdateEventBody implements IUpdateEventBody, IOptionalObserva
     _FinalStage environment(Optional<String> environment);
 
     _FinalStage environment(String environment);
+
+    _FinalStage agentId(Optional<String> agentId);
+
+    _FinalStage agentId(String agentId);
+
+    _FinalStage agentName(Optional<String> agentName);
+
+    _FinalStage agentName(String agentName);
+
+    _FinalStage agentDisplayName(Optional<String> agentDisplayName);
+
+    _FinalStage agentDisplayName(String agentDisplayName);
   }
 
   @JsonIgnoreProperties(
@@ -236,6 +276,12 @@ public final class UpdateEventBody implements IUpdateEventBody, IOptionalObserva
     private String id;
 
     private Optional<String> environment = Optional.empty();
+
+    private Optional<String> agentId = Optional.empty();
+
+    private Optional<String> agentName = Optional.empty();
+
+    private Optional<String> agentDisplayName = Optional.empty();
 
     private Optional<String> version = Optional.empty();
 
@@ -277,6 +323,9 @@ public final class UpdateEventBody implements IUpdateEventBody, IOptionalObserva
       parentObservationId(other.getParentObservationId());
       version(other.getVersion());
       environment(other.getEnvironment());
+      agentId(other.getAgentId());
+      agentName(other.getAgentName());
+      agentDisplayName(other.getAgentDisplayName());
       return this;
     }
 
@@ -300,6 +349,54 @@ public final class UpdateEventBody implements IUpdateEventBody, IOptionalObserva
     )
     public _FinalStage environment(Optional<String> environment) {
       this.environment = environment;
+      return this;
+    }
+
+    @java.lang.Override
+    public _FinalStage agentId(String agentId) {
+      this.agentId = Optional.ofNullable(agentId);
+      return this;
+    }
+
+    @java.lang.Override
+    @JsonSetter(
+        value = "agentId",
+        nulls = Nulls.SKIP
+    )
+    public _FinalStage agentId(Optional<String> agentId) {
+      this.agentId = agentId;
+      return this;
+    }
+
+    @java.lang.Override
+    public _FinalStage agentName(String agentName) {
+      this.agentName = Optional.ofNullable(agentName);
+      return this;
+    }
+
+    @java.lang.Override
+    @JsonSetter(
+        value = "agentName",
+        nulls = Nulls.SKIP
+    )
+    public _FinalStage agentName(Optional<String> agentName) {
+      this.agentName = agentName;
+      return this;
+    }
+
+    @java.lang.Override
+    public _FinalStage agentDisplayName(String agentDisplayName) {
+      this.agentDisplayName = Optional.ofNullable(agentDisplayName);
+      return this;
+    }
+
+    @java.lang.Override
+    @JsonSetter(
+        value = "agentDisplayName",
+        nulls = Nulls.SKIP
+    )
+    public _FinalStage agentDisplayName(Optional<String> agentDisplayName) {
+      this.agentDisplayName = agentDisplayName;
       return this;
     }
 
@@ -465,7 +562,7 @@ public final class UpdateEventBody implements IUpdateEventBody, IOptionalObserva
 
     @java.lang.Override
     public UpdateEventBody build() {
-      return new UpdateEventBody(id, traceId, name, startTime, metadata, input, output, level, statusMessage, parentObservationId, version, environment, additionalProperties);
+      return new UpdateEventBody(id, traceId, name, startTime, metadata, input, output, level, statusMessage, parentObservationId, version, environment, agentId, agentName, agentDisplayName, additionalProperties);
     }
   }
 }

@@ -56,6 +56,12 @@ public final class CreateGenerationBody implements ICreateSpanBody, ICreateEvent
 
   private final Optional<String> environment;
 
+  private final Optional<String> agentId;
+
+  private final Optional<String> agentName;
+
+  private final Optional<String> agentDisplayName;
+
   private final Optional<OffsetDateTime> completionStartTime;
 
   private final Optional<String> model;
@@ -79,6 +85,7 @@ public final class CreateGenerationBody implements ICreateSpanBody, ICreateEvent
       Optional<Object> metadata, Optional<Object> input, Optional<Object> output,
       Optional<ObservationLevel> level, Optional<String> statusMessage,
       Optional<String> parentObservationId, Optional<String> version, Optional<String> environment,
+      Optional<String> agentId, Optional<String> agentName, Optional<String> agentDisplayName,
       Optional<OffsetDateTime> completionStartTime, Optional<String> model,
       Optional<Map<String, MapValue>> modelParameters, Optional<IngestionUsage> usage,
       Optional<UsageDetails> usageDetails, Optional<Map<String, Double>> costDetails,
@@ -97,6 +104,9 @@ public final class CreateGenerationBody implements ICreateSpanBody, ICreateEvent
     this.parentObservationId = parentObservationId;
     this.version = version;
     this.environment = environment;
+    this.agentId = agentId;
+    this.agentName = agentName;
+    this.agentDisplayName = agentDisplayName;
     this.completionStartTime = completionStartTime;
     this.model = model;
     this.modelParameters = modelParameters;
@@ -186,6 +196,30 @@ public final class CreateGenerationBody implements ICreateSpanBody, ICreateEvent
     return environment;
   }
 
+  /**
+   * @return Deterministic agent identifier (BLAKE2b-64 hash)
+   */
+  @JsonProperty("agentId")
+  public Optional<String> getAgentId() {
+    return agentId;
+  }
+
+  /**
+   * @return Agent name (immutable identifier)
+   */
+  @JsonProperty("agentName")
+  public Optional<String> getAgentName() {
+    return agentName;
+  }
+
+  /**
+   * @return Human-readable agent display name
+   */
+  @JsonProperty("agentDisplayName")
+  public Optional<String> getAgentDisplayName() {
+    return agentDisplayName;
+  }
+
   @JsonProperty("completionStartTime")
   public Optional<OffsetDateTime> getCompletionStartTime() {
     return completionStartTime;
@@ -238,12 +272,12 @@ public final class CreateGenerationBody implements ICreateSpanBody, ICreateEvent
   }
 
   private boolean equalTo(CreateGenerationBody other) {
-    return endTime.equals(other.endTime) && id.equals(other.id) && traceId.equals(other.traceId) && name.equals(other.name) && startTime.equals(other.startTime) && metadata.equals(other.metadata) && input.equals(other.input) && output.equals(other.output) && level.equals(other.level) && statusMessage.equals(other.statusMessage) && parentObservationId.equals(other.parentObservationId) && version.equals(other.version) && environment.equals(other.environment) && completionStartTime.equals(other.completionStartTime) && model.equals(other.model) && modelParameters.equals(other.modelParameters) && usage.equals(other.usage) && usageDetails.equals(other.usageDetails) && costDetails.equals(other.costDetails) && promptName.equals(other.promptName) && promptVersion.equals(other.promptVersion);
+    return endTime.equals(other.endTime) && id.equals(other.id) && traceId.equals(other.traceId) && name.equals(other.name) && startTime.equals(other.startTime) && metadata.equals(other.metadata) && input.equals(other.input) && output.equals(other.output) && level.equals(other.level) && statusMessage.equals(other.statusMessage) && parentObservationId.equals(other.parentObservationId) && version.equals(other.version) && environment.equals(other.environment) && agentId.equals(other.agentId) && agentName.equals(other.agentName) && agentDisplayName.equals(other.agentDisplayName) && completionStartTime.equals(other.completionStartTime) && model.equals(other.model) && modelParameters.equals(other.modelParameters) && usage.equals(other.usage) && usageDetails.equals(other.usageDetails) && costDetails.equals(other.costDetails) && promptName.equals(other.promptName) && promptVersion.equals(other.promptVersion);
   }
 
   @java.lang.Override
   public int hashCode() {
-    return Objects.hash(this.endTime, this.id, this.traceId, this.name, this.startTime, this.metadata, this.input, this.output, this.level, this.statusMessage, this.parentObservationId, this.version, this.environment, this.completionStartTime, this.model, this.modelParameters, this.usage, this.usageDetails, this.costDetails, this.promptName, this.promptVersion);
+    return Objects.hash(this.endTime, this.id, this.traceId, this.name, this.startTime, this.metadata, this.input, this.output, this.level, this.statusMessage, this.parentObservationId, this.version, this.environment, this.agentId, this.agentName, this.agentDisplayName, this.completionStartTime, this.model, this.modelParameters, this.usage, this.usageDetails, this.costDetails, this.promptName, this.promptVersion);
   }
 
   @java.lang.Override
@@ -285,6 +319,12 @@ public final class CreateGenerationBody implements ICreateSpanBody, ICreateEvent
 
     private Optional<String> environment = Optional.empty();
 
+    private Optional<String> agentId = Optional.empty();
+
+    private Optional<String> agentName = Optional.empty();
+
+    private Optional<String> agentDisplayName = Optional.empty();
+
     private Optional<OffsetDateTime> completionStartTime = Optional.empty();
 
     private Optional<String> model = Optional.empty();
@@ -321,6 +361,9 @@ public final class CreateGenerationBody implements ICreateSpanBody, ICreateEvent
       parentObservationId(other.getParentObservationId());
       version(other.getVersion());
       environment(other.getEnvironment());
+      agentId(other.getAgentId());
+      agentName(other.getAgentName());
+      agentDisplayName(other.getAgentDisplayName());
       completionStartTime(other.getCompletionStartTime());
       model(other.getModel());
       modelParameters(other.getModelParameters());
@@ -515,6 +558,48 @@ public final class CreateGenerationBody implements ICreateSpanBody, ICreateEvent
     }
 
     @JsonSetter(
+        value = "agentId",
+        nulls = Nulls.SKIP
+    )
+    public Builder agentId(Optional<String> agentId) {
+      this.agentId = agentId;
+      return this;
+    }
+
+    public Builder agentId(String agentId) {
+      this.agentId = Optional.ofNullable(agentId);
+      return this;
+    }
+
+    @JsonSetter(
+        value = "agentName",
+        nulls = Nulls.SKIP
+    )
+    public Builder agentName(Optional<String> agentName) {
+      this.agentName = agentName;
+      return this;
+    }
+
+    public Builder agentName(String agentName) {
+      this.agentName = Optional.ofNullable(agentName);
+      return this;
+    }
+
+    @JsonSetter(
+        value = "agentDisplayName",
+        nulls = Nulls.SKIP
+    )
+    public Builder agentDisplayName(Optional<String> agentDisplayName) {
+      this.agentDisplayName = agentDisplayName;
+      return this;
+    }
+
+    public Builder agentDisplayName(String agentDisplayName) {
+      this.agentDisplayName = Optional.ofNullable(agentDisplayName);
+      return this;
+    }
+
+    @JsonSetter(
         value = "completionStartTime",
         nulls = Nulls.SKIP
     )
@@ -627,7 +712,7 @@ public final class CreateGenerationBody implements ICreateSpanBody, ICreateEvent
     }
 
     public CreateGenerationBody build() {
-      return new CreateGenerationBody(endTime, id, traceId, name, startTime, metadata, input, output, level, statusMessage, parentObservationId, version, environment, completionStartTime, model, modelParameters, usage, usageDetails, costDetails, promptName, promptVersion, additionalProperties);
+      return new CreateGenerationBody(endTime, id, traceId, name, startTime, metadata, input, output, level, statusMessage, parentObservationId, version, environment, agentId, agentName, agentDisplayName, completionStartTime, model, modelParameters, usage, usageDetails, costDetails, promptName, promptVersion, additionalProperties);
     }
   }
 }
