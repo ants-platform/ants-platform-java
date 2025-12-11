@@ -146,14 +146,16 @@ class UpdateAgentDisplayNameTest {
         // We're just verifying that the method doesn't throw validation exceptions
         assertEquals("proj-test-123", clientWithProject.getProjectId());
 
-        // The HTTP call will fail, but we're testing that we get past validation
+        // The HTTP call will either fail with network error or return false (401/404)
+        // The important thing is we got past the validation (no IllegalArgumentException)
         // In a real test, we'd mock the HTTP client
         try {
-            clientWithProject.updateAgentDisplayName("5d15c8e8b4aee83a", "QA Agent v2.0");
-            fail("Expected network error since no real server is available");
+            boolean result = clientWithProject.updateAgentDisplayName("5d15c8e8b4aee83a", "QA Agent v2.0");
+            // If we get here, HTTP call completed (likely returned 401 unauthorized = false)
+            // This is fine - validation passed, which is what we're testing
+            assertFalse(result, "Should return false for unauthorized request");
         } catch (Exception e) {
-            // Expected - no real server to connect to
-            // The important thing is we got past the validation
+            // Network error is also acceptable - validation still passed
             assertTrue(
                 e.getMessage().contains("Network error") ||
                 e.getMessage().contains("Failed to connect"),
