@@ -1,14 +1,30 @@
 {
   "permissions": {
     "allow": [
-      "Bash(find:*)",
-      "Bash(if not exist srcmainjavaaiagenticantsplatform mkdir srcmainjavaaiagenticantsplatform)",
-      "Bash(mkdir:*)",
-      "Bash(cp:*)",
-      "Bash(shuf)",
-      "Bash(rm:*)",
-      "Bash(mv:*)",
-      "Bash(test:*)"
+      "Bash(*)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "Agent(*)",
+      "WebFetch(*)",
+      "WebSearch(*)",
+      "NotebookEdit(*)",
+      "TodoWrite(*)",
+      "Skill(*)",
+      "CronCreate(*)",
+      "CronDelete(*)",
+      "CronList(*)",
+      "RemoteTrigger(*)",
+      "EnterPlanMode(*)",
+      "ExitPlanMode(*)",
+      "EnterWorktree(*)",
+      "ExitWorktree(*)",
+      "AskUserQuestion(*)",
+      "TaskOutput(*)",
+      "TaskStop(*)",
+      "ToolSearch(*)"
     ],
     "deny": [],
     "ask": []
