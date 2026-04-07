@@ -3,6 +3,7 @@ package com.ants.platform.guardrails.providers;
 import com.ants.platform.guardrails.AntsGuardrailsClient;
 import com.ants.platform.guardrails.AntsTracer;
 import com.ants.platform.guardrails.GuardrailResult;
+import com.ants.platform.guardrails.GuardrailTraceUtils;
 import com.ants.platform.guardrails.GuardrailViolationException;
 import com.ants.platform.guardrails.TracePayload;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -96,6 +97,7 @@ public class AntsGoogleGenAI {
                 effectiveMessages = List.of(Map.of("role", "user", "content", inputCheck.getSanitizedText()));
             }
         }
+        String effectiveInputText = GuardrailTraceUtils.effectiveText(inputText, inputCheck);
 
         long startMs = System.currentTimeMillis();
         try {
@@ -121,14 +123,18 @@ public class AntsGoogleGenAI {
 
             // Output guardrail check
             if (guardrailActive && !outputText.isEmpty()) {
-                outputCheck = guardrails.checkOutput(outputText, inputText);
+                outputCheck = guardrails.checkOutput(outputText, effectiveInputText);
                 if (outputCheck.getResult() == GuardrailResult.Result.BLOCKED) {
                     throw new GuardrailViolationException("output", outputCheck);
                 }
+                outputText = GuardrailTraceUtils.effectiveText(outputText, outputCheck);
+                applySanitizedOutput(json, outputText);
             }
 
             TracePayload.Usage usage = extractUsage(json);
-            logTrace(model, messages, outputText, usage, latencyMs, inputCheck, outputCheck);
+            String guardrailResult = GuardrailTraceUtils.overallGuardrailResult(
+                    guardrailActive, inputCheck, outputCheck);
+            logTrace(model, effectiveMessages, outputText, usage, latencyMs, inputCheck, outputCheck, guardrailResult);
 
             return json;
         } catch (IOException | InterruptedException e) {
@@ -180,13 +186,15 @@ public class AntsGoogleGenAI {
 
     private void logTrace(String model, List<Map<String, String>> messages, String outputText,
                            TracePayload.Usage usage, long latencyMs,
-                           GuardrailResult inputCheck, GuardrailResult outputCheck) {
+                           GuardrailResult inputCheck, GuardrailResult outputCheck,
+                           String guardrailResult) {
         TracePayload.Builder payload = TracePayload.builder()
                 .model(model)
                 .provider("google-genai")
                 .inputMessages(messages)
                 .outputText(outputText)
                 .latencyMs(latencyMs)
+                .guardrailResult(guardrailResult)
                 .agentId(agentId)
                 .agentName(agentName);
 
@@ -196,6 +204,23 @@ public class AntsGoogleGenAI {
         }
 
         tracer.log(payload.build());
+    }
+
+    private void applySanitizedOutput(JsonNode json, String outputText) {
+        JsonNode candidates = json.path("candidates");
+        if (!(candidates instanceof ArrayNode candidatesArray)) return;
+
+        boolean replaced = false;
+        for (JsonNode candidate : candidatesArray) {
+            JsonNode parts = candidate.path("content").path("parts");
+            if (!(parts instanceof ArrayNode partsArray)) continue;
+            for (JsonNode part : partsArray) {
+                if (!(part instanceof ObjectNode partNode)) continue;
+                if (!partNode.has("text")) continue;
+                partNode.put("text", replaced ? "" : outputText);
+                replaced = true;
+            }
+        }
     }
 
     public static class Builder {

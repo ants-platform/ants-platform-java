@@ -127,10 +127,7 @@ public class AntsTracer {
         ObjectNode traceBody = MAPPER.createObjectNode();
         traceBody.put("id", traceId);
         traceBody.put("timestamp", now);
-        String traceName = payload.getAgentName() != null
-                ? payload.getAgentName()
-                : payload.getProvider() + "/" + payload.getModel();
-        traceBody.put("name", traceName);
+        traceBody.put("name", payload.getProvider() + "/" + payload.getModel());
         traceBody.set("input", toJsonNode(payload.getInputMessages()));
         traceBody.put("output", payload.getOutputText());
         if (payload.getUserId() != null) traceBody.put("userId", payload.getUserId());
@@ -139,7 +136,9 @@ public class AntsTracer {
         traceBody.set("metadata", traceMetadata);
         if (payload.getAgentId() != null) {
             traceBody.put("agentId", payload.getAgentId());
-            traceBody.put("agentName", payload.getAgentName() != null ? payload.getAgentName() : payload.getAgentId());
+            if (payload.getAgentName() != null) {
+                traceBody.put("agentName", payload.getAgentName());
+            }
         }
 
         ObjectNode traceEvent = MAPPER.createObjectNode();
@@ -183,6 +182,9 @@ public class AntsTracer {
         if (payload.getLatencyMs() != null) {
             genMeta.put("latency_ms", payload.getLatencyMs());
         }
+        if (payload.getGuardrailResult() != null) {
+            genMeta.put("guardrail_result", payload.getGuardrailResult());
+        }
         genBody.set("metadata", genMeta);
 
         ObjectNode genEvent = MAPPER.createObjectNode();
@@ -221,6 +223,9 @@ public class AntsTracer {
         }
         if (payload.getGuardrailResults() != null) {
             meta.set("guardrailResults", MAPPER.valueToTree(payload.getGuardrailResults()));
+        }
+        if (payload.getGuardrailResult() != null) {
+            meta.put("guardrail_result", payload.getGuardrailResult());
         }
         if (payload.getExtraMetadata() != null) {
             payload.getExtraMetadata().forEach((k, v) -> {

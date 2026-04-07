@@ -16,6 +16,7 @@ public class TracePayload {
     private final Usage usage;
     private final Long latencyMs;
     private final GuardrailResults guardrailResults;
+    private final String guardrailResult;
     private final String traceId;
     private final String sessionId;
     private final String userId;
@@ -32,6 +33,7 @@ public class TracePayload {
         this.usage = b.usage;
         this.latencyMs = b.latencyMs;
         this.guardrailResults = b.guardrailResults;
+        this.guardrailResult = b.guardrailResult;
         this.traceId = b.traceId;
         this.sessionId = b.sessionId;
         this.userId = b.userId;
@@ -50,6 +52,7 @@ public class TracePayload {
     public Usage getUsage() { return usage; }
     public Long getLatencyMs() { return latencyMs; }
     public GuardrailResults getGuardrailResults() { return guardrailResults; }
+    public String getGuardrailResult() { return guardrailResult; }
     public String getTraceId() { return traceId; }
     public String getSessionId() { return sessionId; }
     public String getUserId() { return userId; }
@@ -97,6 +100,7 @@ public class TracePayload {
         private Usage usage;
         private Long latencyMs;
         private GuardrailResults guardrailResults;
+        private String guardrailResult;
         private String traceId;
         private String sessionId;
         private String userId;
@@ -119,6 +123,7 @@ public class TracePayload {
             this.guardrailResults = new GuardrailResults(input, output);
             return this;
         }
+        public Builder guardrailResult(String result) { this.guardrailResult = result; return this; }
         public Builder traceId(String id) { this.traceId = id; return this; }
         public Builder sessionId(String id) { this.sessionId = id; return this; }
         public Builder userId(String id) { this.userId = id; return this; }

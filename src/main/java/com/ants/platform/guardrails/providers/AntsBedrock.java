@@ -3,6 +3,7 @@ package com.ants.platform.guardrails.providers;
 import com.ants.platform.guardrails.AntsGuardrailsClient;
 import com.ants.platform.guardrails.AntsTracer;
 import com.ants.platform.guardrails.GuardrailResult;
+import com.ants.platform.guardrails.GuardrailTraceUtils;
 import com.ants.platform.guardrails.GuardrailViolationException;
 import com.ants.platform.guardrails.TracePayload;
 import software.amazon.awssdk.regions.Region;
@@ -73,8 +74,7 @@ public class AntsBedrock {
 
             if (inputCheck.getResult() == GuardrailResult.Result.SANITIZED
                     && inputCheck.getSanitizedText() != null) {
-                effectiveRequest = ConverseRequest.builder()
-                        .modelId(request.modelId())
+                effectiveRequest = request.toBuilder()
                         .messages(Message.builder()
                                 .role(ConversationRole.USER)
                                 .content(ContentBlock.fromText(inputCheck.getSanitizedText()))
@@ -82,6 +82,7 @@ public class AntsBedrock {
                         .build();
             }
         }
+        String effectiveInputText = GuardrailTraceUtils.effectiveText(inputText, inputCheck);
 
         // LLM call with latency tracking
         long startMs = System.currentTimeMillis();
@@ -92,17 +93,30 @@ public class AntsBedrock {
 
         // Output guardrail check (only if agent has a policy configured)
         if (guardrailActive && outputText != null && !outputText.isEmpty()) {
-            outputCheck = guardrails.checkOutput(outputText, inputText);
+            outputCheck = guardrails.checkOutput(outputText, effectiveInputText);
             if (outputCheck.getResult() == GuardrailResult.Result.BLOCKED) {
                 throw new GuardrailViolationException("output", outputCheck);
             }
+            outputText = GuardrailTraceUtils.effectiveText(outputText, outputCheck);
+            response = applySanitizedOutput(response, outputText);
         }
 
         // Extract usage from Bedrock response
         TracePayload.Usage usage = extractUsage(response);
+        String guardrailResult = GuardrailTraceUtils.overallGuardrailResult(
+                guardrailActive, inputCheck, outputCheck);
 
         // Fire-and-forget trace logging
-        logTrace(request.modelId(), inputText, outputText, usage, latencyMs, inputCheck, outputCheck);
+        logTrace(
+                effectiveRequest.modelId(),
+                toTraceMessages(effectiveRequest),
+                outputText,
+                usage,
+                latencyMs,
+                inputCheck,
+                outputCheck,
+                guardrailResult
+        );
 
         return response;
     }
@@ -133,15 +147,17 @@ public class AntsBedrock {
         );
     }
 
-    private void logTrace(String modelId, String inputText, String outputText,
+    private void logTrace(String modelId, List<Map<String, String>> inputMessages, String outputText,
                            TracePayload.Usage usage, long latencyMs,
-                           GuardrailResult inputCheck, GuardrailResult outputCheck) {
+                           GuardrailResult inputCheck, GuardrailResult outputCheck,
+                           String guardrailResult) {
         TracePayload.Builder payload = TracePayload.builder()
                 .model(modelId != null ? modelId : "bedrock-unknown")
                 .provider("bedrock")
-                .inputMessages(List.of(Map.of("role", "user", "content", inputText)))
+                .inputMessages(inputMessages)
                 .outputText(outputText)
                 .latencyMs(latencyMs)
+                .guardrailResult(guardrailResult)
                 .agentId(agentId)
                 .agentName(agentName);
 
@@ -151,6 +167,36 @@ public class AntsBedrock {
         }
 
         tracer.log(payload.build());
+    }
+
+    private List<Map<String, String>> toTraceMessages(ConverseRequest request) {
+        if (!request.hasMessages()) {
+            return List.of();
+        }
+
+        return request.messages().stream()
+                .map(message -> Map.of(
+                        "role", message.roleAsString().toLowerCase(),
+                        "content", message.content().stream()
+                                .filter(block -> block.text() != null)
+                                .map(ContentBlock::text)
+                                .collect(Collectors.joining("\n"))
+                ))
+                .collect(Collectors.toList());
+    }
+
+    private ConverseResponse applySanitizedOutput(ConverseResponse response, String outputText) {
+        if (response.output() == null || response.output().message() == null) {
+            return response;
+        }
+
+        Message sanitizedMessage = response.output().message().toBuilder()
+                .content(ContentBlock.fromText(outputText))
+                .build();
+        ConverseOutput sanitizedOutput = response.output().toBuilder()
+                .message(sanitizedMessage)
+                .build();
+        return response.toBuilder().output(sanitizedOutput).build();
     }
 
     public static class Builder {

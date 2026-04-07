@@ -3,6 +3,7 @@ package com.ants.platform.guardrails.providers;
 import com.ants.platform.guardrails.AntsGuardrailsClient;
 import com.ants.platform.guardrails.AntsTracer;
 import com.ants.platform.guardrails.GuardrailResult;
+import com.ants.platform.guardrails.GuardrailTraceUtils;
 import com.ants.platform.guardrails.GuardrailViolationException;
 import com.ants.platform.guardrails.TracePayload;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -93,6 +94,7 @@ public class AntsOpenAI {
                 effectiveMessages = List.of(Map.of("role", "user", "content", inputCheck.getSanitizedText()));
             }
         }
+        String effectiveInputText = GuardrailTraceUtils.effectiveText(inputText, inputCheck);
 
         long startMs = System.currentTimeMillis();
         try {
@@ -125,17 +127,21 @@ public class AntsOpenAI {
 
             // Output guardrail check (only if agent has a policy configured)
             if (guardrailActive && !outputText.isEmpty()) {
-                outputCheck = guardrails.checkOutput(outputText, inputText);
+                outputCheck = guardrails.checkOutput(outputText, effectiveInputText);
                 if (outputCheck.getResult() == GuardrailResult.Result.BLOCKED) {
                     throw new GuardrailViolationException("output", outputCheck);
                 }
+                outputText = GuardrailTraceUtils.effectiveText(outputText, outputCheck);
+                applySanitizedOutput(json, outputText);
             }
 
             // Extract usage from OpenAI response
             TracePayload.Usage usage = extractUsage(json);
+            String guardrailResult = GuardrailTraceUtils.overallGuardrailResult(
+                    guardrailActive, inputCheck, outputCheck);
 
             // Fire-and-forget trace logging
-            logTrace(model, messages, outputText, usage, latencyMs, inputCheck, outputCheck);
+            logTrace(model, effectiveMessages, outputText, usage, latencyMs, inputCheck, outputCheck, guardrailResult);
 
             return json;
         } catch (IOException | InterruptedException e) {
@@ -155,13 +161,15 @@ public class AntsOpenAI {
 
     private void logTrace(String model, List<Map<String, String>> messages, String outputText,
                            TracePayload.Usage usage, long latencyMs,
-                           GuardrailResult inputCheck, GuardrailResult outputCheck) {
+                           GuardrailResult inputCheck, GuardrailResult outputCheck,
+                           String guardrailResult) {
         TracePayload.Builder payload = TracePayload.builder()
                 .model(model)
                 .provider("openai")
                 .inputMessages(messages)
                 .outputText(outputText)
                 .latencyMs(latencyMs)
+                .guardrailResult(guardrailResult)
                 .agentId(agentId)
                 .agentName(agentName);
 
@@ -171,6 +179,13 @@ public class AntsOpenAI {
         }
 
         tracer.log(payload.build());
+    }
+
+    private void applySanitizedOutput(JsonNode json, String outputText) {
+        JsonNode message = json.path("choices").path(0).path("message");
+        if (message instanceof ObjectNode objectNode) {
+            objectNode.put("content", outputText);
+        }
     }
 
     public static class Builder {

@@ -29,6 +29,9 @@ public class GuardrailResult {
     @JsonProperty("guardrailAction")
     private String guardrailAction;
 
+    @JsonProperty("blockedMessage")
+    private String blockedMessage;
+
     public GuardrailResult() {
         this.violations = Collections.emptyList();
     }
@@ -47,6 +50,7 @@ public class GuardrailResult {
     public RiskLevel getRiskLevel() { return riskLevel; }
     public String getSanitizedText() { return sanitizedText; }
     public String getGuardrailAction() { return guardrailAction; }
+    public String getBlockedMessage() { return blockedMessage; }
 
     public List<Violation> getViolations() {
         return violations != null ? violations : Collections.emptyList();

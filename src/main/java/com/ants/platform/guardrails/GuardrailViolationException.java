@@ -21,6 +21,9 @@ public class GuardrailViolationException extends RuntimeException {
     public GuardrailResult getGuardrailResult() { return guardrailResult; }
 
     private static String buildMessage(String direction, GuardrailResult result) {
+        if (result.getBlockedMessage() != null && !result.getBlockedMessage().isBlank()) {
+            return result.getBlockedMessage();
+        }
         String violations = result.getViolations().stream()
                 .map(Violation::toString)
                 .collect(Collectors.joining("; "));
