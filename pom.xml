@@ -162,6 +162,14 @@
             <version>${okhttp.version}</version>
         </dependency>
 
+        <!-- AWS Bedrock Runtime (optional - for guardrails Bedrock provider) -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>bedrockruntime</artifactId>
+            <version>2.29.51</version>
+            <optional>true</optional>
+        </dependency>
+
         <!-- JUnit Jupiter API (test scope only - not included in published JAR) -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
