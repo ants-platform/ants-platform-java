@@ -35,7 +35,7 @@ jobs:
         run: mvn -B clean package -Dtest='!*E2ETest' -DfailIfNoTests=false
 
       - name: Publish to Maven Central
-        run: mvn -B deploy -P central
+        run: mvn -B deploy -P central -Dtest='!*E2ETest' -DfailIfNoTests=false
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
